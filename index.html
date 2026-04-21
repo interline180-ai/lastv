@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Сэтгэлийн цуурай</title>
+  <style>
+    :root {
+      --bg: #eef4f1;
+      --bg-soft: rgba(255,255,255,0.72);
+      --card: rgba(255,255,255,0.82);
+      --text: #1f2d2a;
+      --muted: #65756f;
+      --line: rgba(69, 98, 87, 0.14);
+      --accent: #6f9b8a;
+      --accent-deep: #4f7366;
+      --shadow: 0 20px 50px rgba(56, 81, 72, 0.12);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(164, 202, 188, 0.35), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(196, 220, 209, 0.5), transparent 26%),
+        linear-gradient(180deg, #edf5f1 0%, #e5efea 100%);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: 0 auto;
+      padding: 36px 0 56px;
+    }
+
+    .hero {
+      background: var(--bg-soft);
+      border: 1px solid rgba(255,255,255,0.5);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      padding: 34px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(111, 155, 138, 0.08);
+      z-index: 0;
+    }
+
+    .hero::before {
+      width: 180px;
+      height: 180px;
+      top: -60px;
+      right: -30px;
+    }
+
+    .hero::after {
+      width: 120px;
+      height: 120px;
+      bottom: -35px;
+      left: -25px;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(111, 155, 138, 0.12);
+      color: var(--accent-deep);
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.08;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      max-width: 640px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+      margin-top: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.54);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .section-title {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .section-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .score-btn {
+      border: none;
+      border-radius: 16px;
+      height: 54px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      background: rgba(111, 155, 138, 0.08);
+      color: var(--text);
+      transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+      box-shadow: inset 0 0 0 1px rgba(79, 115, 102, 0.08);
+    }
+
+    .score-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(111, 155, 138, 0.16);
+      box-shadow: 0 10px 20px rgba(79, 115, 102, 0.12);
+    }
+
+    .result-box {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--line);
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(111, 155, 138, 0.12);
+      color: var(--accent-deep);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .quote {
+      margin: 10px 0 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .support {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .mini-card {
+      background: rgba(255,255,255,0.66);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .mini-card:last-child { margin-bottom: 0; }
+
+    .mini-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .mini-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.66);
+    }
+
+    th, td {
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    th {
+      background: rgba(111, 155, 138, 0.1);
+      font-size: 13px;
+      letter-spacing: 0.3px;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .footer-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 18px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(28, 40, 36, 0.38);
+      padding: 16px;
+      z-index: 999;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-content {
+      width: min(520px, 100%);
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.6);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 26px;
+      box-shadow: 0 24px 60px rgba(26, 38, 33, 0.18);
+      padding: 26px;
+      animation: fadeUp 0.28s ease;
+    }
+
+    @keyframes fadeUp {
+      from { transform: translateY(14px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .close-btn {
+      border: none;
+      background: rgba(111, 155, 138, 0.12);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--accent-deep);
+    }
+
+    .modal-quote {
+      margin: 0 0 14px;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .modal-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 920px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .container { width: 94%; padding-top: 18px; }
+      .hero, .card { padding: 18px; }
+      .score-grid { grid-template-columns: repeat(4, 1fr); }
+      .quote { font-size: 16px; }
+      .modal-content { padding: 20px; }
+      .modal-quote { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-content">
+        <div class="tag">Хүн байхуй төсөл</div>
+        <h1>Echo of Soul</h1>
+        <p class="subtitle">
+          Өнөөдрийн мэдрэмжээ 0–10 оноогоор үнэл. Таны үнэлгээнд тохирсон урмын үг,
+          хоёртын дүрслэл, зөөлөн дэмжлэг эндээс эхэлнэ.
+        </p>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2 class="section-title">Өнөөдрийн төлөв</h2>
+        <p class="section-note">Доорх 0–10 онооноос нэгийг сонгоно уу.</p>
+
+        <div class="score-grid" id="scoreGrid"></div>
+
+        <div class="result-box" id="resultBox">
+          <div class="result-row">
+            <span class="pill">Оноо: —</span>
+            <span class="pill">Хоёртын код: —</span>
+          </div>
+          <p class="quote">Энд таны сэтгэлийн үг гарна.</p>
+          <p class="support">Тайлбар: Оноо сонгосны дараа popup цонх нээгдэж, тухайн төлөвт тохирсон үг харагдана.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Товч мэдээлэл</h2>
+        <p class="section-note">Системийн санаа болон хэрэгжүүлэх логик.</p>
+
+        <div class="mini-card">
+          <h3>QR ашиглалт</h3>
+          <p>
+            Хэрэглэгч QR код уншуулахад энэ веб нээгдэнэ. Ингэснээр ямар ч орчинд,
+            хурдан, шууд, нэмэлт апп суулгахгүйгээр сэтгэлзүйн жижиг дэмжлэг авах боломжтой.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h3>Хоёртын тооллын логик</h3>
+          <p>
+            Сонгосон 0–10 оноо нь компьютерийн ойлгодог хэлбэр буюу хоёртын тоололд хөрвөнө.
+            Ингэснээр технологийн санааг сэтгэлийн үгтэй уялдуулж харуулна.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top: 22px;">
+      <h2 class="section-title">Мэдээллийн хүснэгт</h2>
+      <p class="section-note">QR код болон хоёртын тооллын системийн товч тайлбар.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Сэдэв</th>
+            <th>Тайлбар</th>
+            <th>Хэрэглээ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>QR код</strong></td>
+            <td>QR код нь мэдээллийг хурдан уншуулах зориулалттай хоёр хэмжээст код юм.</td>
+            <td>Постер, карт, самбар дээр байршуулж хэрэглэгчийг веб рүү шууд оруулна.</td>
+          </tr>
+          <tr>
+            <td><strong>Гарал үүсэл</strong></td>
+            <td>QR кодыг 1994 онд Японд Denso Wave компани хөгжүүлсэн.</td>
+            <td>Эхэндээ үйлдвэрлэл, логистикт ашиглагдаж байсан бол одоо төлбөр, холбоос, бүртгэлд өргөн хэрэглэгддэг.</td>
+          </tr>
+          <tr>
+            <td><strong>Хоёртын тоолол</strong></td>
+            <td>0 ба 1 гэсэн хоёр тэмдэгт дээр суурилсан тооллын систем.</td>
+            <td>Компьютер, дижитал төхөөрөмжүүдийн үндсэн өгөгдлийн дүрслэл болдог.</td>
+          </tr>
+          <tr>
+            <td><strong>Сэтгэлзүйн холболт</strong></td>
+            <td>Хэрэглэгчийн өгсөн оноог хоёртын код руу хөрвүүлж, технологи ба хүний мэдрэмжийг холбож өгнө.</td>
+            <td>Төсөлд орчин үеийн, шинэлэг, ойлгомжтой интерактив элемент бий болгоно.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="footer-note">Этүгэн ПХИ-201 4-р баг </p>
+    </section>
+  </div>
+
+  <div class="modal" id="quoteModal">
+    <div class="modal-content">
+      <div class="modal-top">
+        <h3 class="modal-title">Өнөөдрийн үг</h3>
+        <button class="close-btn" id="closeModal">×</button>
+      </div>
+      <p class="modal-quote" id="modalQuote">...</p>
+      <p class="modal-desc" id="modalDesc">...</p>
+    </div>
+  </div>
+
+  <script>
+    const messages = {
+      0: {
+        quote: "Өнөөдөр хэцүү байсан ч чи ганцаараа биш. Амьсгалаа удаанаар аваад, яг энэ мөчийг л давчих.",
+        desc: "0 гэдэг бол төгсгөл биш. Өөртөө хамгийн зөөлөн ханд. Боломжтой бол ойр хүнийгээ эсвэл итгэдэг нэгэнтэйгээ ярилцаарай."
+      },
+      1: {
+        quote: "Жаахан ч гэсэн тэсэж ирсэн чинь өөрөө хүч шүү. Чи одоо ч хөдөлж байна.",
+        desc: "Өнөөдрийн зорилго том байх албагүй. Ус уух, амрах, нэг энгийн алхам хийхэд хангалттай."
+      },
+      2: {
+        quote: "Бүүдгэр өдөр байсан ч дотор чинь оч бүр унтраагүй.",
+        desc: "Өөрийгөө хүчлэхгүйгээр багахан амралт ав. Чамд зөөлөн хандах нь өнөөдрийн зөв шийдэл байж болно."
+      },
+      3: {
+        quote: "Чи одоо эмзэг байж магадгүй, гэхдээ эмзэг байна гэдэг сул гэсэн үг биш.",
+        desc: "Сэтгэлээ дарж нуухын оронд өөртөө үнэн бай. Өнөөдөр зүгээр л тайван байхад болно."
+      },
+      4: {
+        quote: "Өнөөдөр төгс биш ч гэлээ, чи үргэлжлүүлж чадсан байна.",
+        desc: "Жижиг ахиц ч гэсэн ахиц. Өөрийгөө шүүмжлэхээсээ өмнө хийсэн зүйлсээ нэг бодоод үз."
+      },
+      5: {
+        quote: "Чи яг дундаа явж байна. Амьсгалаа тэнцүүлээд, өөрийгөө жаахан дэмжээд үз.",
+        desc: "Тэнцвэргүй мэт санагдсан ч чи унаагүй байна. Нэг жижиг сайн зүйл өнөөдрийг чинь өөрчилж чадна."
+      },
+      6: {
+        quote: "Чи сэргэж эхэлж байна. Энэ бол анзаарагдахуйц сайн дохио.",
+        desc: "Өөрийнхөө энэ хэмнэлийг хадгал. Чамд тохирох тайван орчин, сайн дуу, багахан алхалт тус болно."
+      },
+      7: {
+        quote: "Өнөөдөр чи нэлээд гэрэлтэй байна. Энэ мэдрэмжээ өөртөө хадгалаарай.",
+        desc: "Сайн байгаа үедээ өөрийгөө магтах хэрэгтэй. Чиний тогтвортой байдал үнэтэй."
+      },
+      8: {
+        quote: "Чиний доторх хүч өнөөдөр тод мэдрэгдэж байна. Тэр гэрлээ бусдад ч түгээгээрэй.",
+        desc: "Эерэг төлөвөө тогтоон барихын тулд өнөөдрийн гоё мөчөө тэмдэглээд үлдээ."
+      },
+      9: {
+        quote: "Чи өнөөдөр маш хүчтэй байна. Энэ энергийг зөв зүйлдээ зарцуулаарай.",
+        desc: "Өндөр хэмнэлтэй үедээ ч тайван байдлаа хадгалж чадвал илүү тогтвортой сайхан мэдрэмж үлдэнэ."
+      },
+      10: {
+        quote: "Өнөөдөр чи бүтэн гэрэл мэт байна. Инээмсэглэл чинь орчныг хүртэл өөрчилж чадна.",
+        desc: "Энэ сайхан төлөвөө талархалтайгаар мэдэр. Чиний доторх сайн энерги бол үнэхээр хүчтэй зүйл."
+      }
+    };
+
+    const scoreGrid = document.getElementById('scoreGrid');
+    const resultBox = document.getElementById('resultBox');
+    const modal = document.getElementById('quoteModal');
+    const modalQuote = document.getElementById('modalQuote');
+    const modalDesc = document.getElementById('modalDesc');
+    const closeModal = document.getElementById('closeModal');
+
+    function toBinary(value) {
+      return Number(value).toString(2);
+    }
+
+    function updateResult(score) {
+      const binary = toBinary(score);
+      const data = messages[score];
+
+      resultBox.innerHTML = `
+        <div class="result-row">
+          <span class="pill">Оноо: ${score}/10</span>
+          <span class="pill">Хоёртын код: ${binary}</span>
+        </div>
+        <p class="quote">${data.quote}</p>
+        <p class="support">${score <= 5
+          ? 'Чамд илүү ойр, илүү зөөлөн хандсан дэмжлэг илгээгдлээ.'
+          : 'Энэ эерэг төлөвөө хадгалахад жижиг дадал тусална.'}</p>
+      `;
+
+      modalQuote.textContent = data.quote;
+      modalDesc.textContent = `Таны сонгосон ${score} оноо нь хоёртын тооллоор ${binary} гэж дүрслэгдэнэ. ${data.desc}`;
+      modal.classList.add('show');
+    }
+
+    for (let i = 0; i <= 10; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'score-btn';
+      btn.textContent = i;
+      btn.addEventListener('click', () => updateResult(i));
+      scoreGrid.appendChild(btn);
+    }
+
+    closeModal.addEventListener('click', () => modal.classList.remove('show'));
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
